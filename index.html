@@ -92,35 +92,35 @@
         <button></button>
     </div>
     <script>
-        window.oncontextmenu = function () {
-            return false;
-        }
+       
         function clicked(e){
-            if(e.which == 3){
-                if(e.target.classList.value.indexOf('road') > -1){
-                    e.target.classList = "square building";
-                } else if(e.target.classList.value.indexOf('building') > -1){
-                    e.target.classList = "square";
-                } else {
-                    e.target.classList = "square road";    
-                }
-            } else {
-                console.log(e.target);
-                if(e.target.children[0].classList.value.indexOf('zombie') > -1){
-                    e.target.children[0].classList = "square";
-                } else if(e.target.children[0].classList.value.indexOf('player') > -1){
-                    e.target.children[0].classList = "square zombie";
-                }
-                else {
-                    e.target.children[0].classList = "square player";
-                }
+            
+                
+            if(e.target.classList.value.indexOf('zombie') > -1){
+                e.target.classList = "square-content";
+            } else if(e.target.classList.value.indexOf('player') > -1){
+                e.target.classList = "square-content zombie";
+            } else if(e.target.classList.value.indexOf('fence') > -1){
+                e.target.classList = "square-content player";
             }
-            e.cancelBubble = true;
+            else {
+                e.target.classList = "square-content fence";
+            }
+            
+            
+        }
+        
+        function check_building(x,y){
+            if(x >= 0 && y >= 0){
+                var e = document.querySelector('[x="'+x+'"][y="'+y+'"]');
+                return e.classList.value.indexOf('building') > -1;
+            }
+            return false;
         }
         
         function generate_playground() {
-            for(var x=0; x < 20 ; x++){
-                for(var y=0; y < 20 ; y++){
+            for(var y=0; y < 20 ; y++){
+                for(var x=0; x < 20 ; x++){
                     var e = document.createElement('div');
                     var e_content = document.createElement('div');
                     e.classList="square";
@@ -128,8 +128,19 @@
                     e.setAttribute('x',x);
                     e.setAttribute('y',y);
                     e.addEventListener('click', clicked);
+                     e.classList = 'square road' ;
                     document.getElementById('playground').appendChild(e);
                     e.appendChild(e_content);
+                    
+                    var rand = Math.random() * 100;
+                    var probability_building = check_building(x,y-1) ? 30 : 5
+                    if(rand < probability_building){
+                        e.classList = 'square building' ;
+                    } /*else if(check_building(x,y-1) || check_building(x-1,y)){
+                        e.classList = 'square' ;
+                    } */else {
+                        e.classList = 'square road' ;
+                    }
                     
                 }
             }
