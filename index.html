@@ -137,6 +137,14 @@
             return false;
         }
         
+        function available_square(x,y){
+            var e = document.querySelector('[x="'+x+'"][y="'+y+'"]');
+            if(e){
+                //console.log( e.classList.value.indexOf('building') == -1 && e.childNodes[0].classList.value.indexOf('car') > -1 /*&& e.childNodes[0].classList.value.indexOf('tree') > -1&& e.childNodes[0].classList.value.indexOf('player') > -1 && e.childNodes[0].classList.value.indexOf('zombie') > -1*/);
+                return !(e.classList.value.indexOf('building') > -1 || e.childNodes[0].classList.value.indexOf('car') > -1 || e.childNodes[0].classList.value.indexOf('tree') > -1 || e.childNodes[0].classList.value.indexOf('player') > -1 || e.childNodes[0].classList.value.indexOf('zombie') > -1);
+            }
+        }
+        
         function generate_playground() {
             for(var y=0; y < 20 ; y++){
                 for(var x=0; x < 20 ; x++){
@@ -206,13 +214,13 @@
                         var up = document.querySelector('[x="'+x+'"][y="'+(y-1)+'"]');
                         var down = document.querySelector('[x="'+x+'"][y="'+(y+1)+'"]');
                         var rand = Math.random() * 100;
-                        if(right && rand < 25){
+                        if(right && rand < 25 && available_square(x+1,y)){
                             e.setAttribute('vx',1);
-                        } else if(right && rand < 50){
+                        } else if(left && rand < 50 && available_square(x-1,y)){
                             e.setAttribute('vx',-1);
-                        } else if(up && rand < 75){
+                        } else if(up && rand < 75 && available_square(x,y-1)){
                             e.setAttribute('vy',-1);
-                        } else if(down && rand < 100){
+                        } else if(down && rand < 100 && available_square(x,y+1)){
                             e.setAttribute('vy',1);
                         } 
                     }
