@@ -110,22 +110,55 @@
     </div>
     <script>
        
+        /* RULES */
+        // On your turn, you can add zombies on sewer plates and from building
+        // On player turn, they can climb on trees and get in cars (only for 2 turns)
+        // When you attack a human, 50/50 chance to kill your zombie or get transformed into a zombie
+        // They must survive 10 turns for army to come
+        
+        //how many zombies per turn ? how many humans per game
         var squares = [];
+        var allowed_zombies = 4;
         function clicked(e){
-            
-                
-            if(e.target.classList.value.indexOf('zombie') > -1){
-                e.target.classList = "square-content";
-            } else if(e.target.classList.value.indexOf('player') > -1){
-                e.target.classList = "square-content zombie";
-            } else if(e.target.classList.value.indexOf('fence') > -1){
-                e.target.classList = "square-content player";
+            if(allowed_zombies > 0){
+                var x = parseInt(e.target.parentElement.getAttribute('x'));
+                var y = parseInt(e.target.parentElement.getAttribute('y'));
+                if(check_building(x,y)){    
+                    var right = document.querySelector('[x="'+(x+1)+'"][y="'+y+'"]');
+                    var left = document.querySelector('[x="'+(x-1)+'"][y="'+y+'"]');
+                    var up = document.querySelector('[x="'+x+'"][y="'+(y-1)+'"]');
+                    var down = document.querySelector('[x="'+x+'"][y="'+(y+1)+'"]');
+                    if(available_square(x,y+1)){
+                        down.childNodes[0].classList = "square-content zombie";
+                        allowed_zombies --;
+                    } else if(available_square(x,y-1)){
+                        up.childNodes[0].classList = "square-content zombie";
+                        allowed_zombies --;
+                    } else if(available_square(x+1,y)){
+                        right.childNodes[0].classList = "square-content zombie";
+                        allowed_zombies --;
+                    } else if(available_square(x-1,y)){
+                        left.childNodes[0].classList = "square-content zombie";
+                        allowed_zombies --;
+                    }
+                    
+                } else if(check_sewer(x,y) && available_square(x,y)) {
+                    e.target.classList = "square-content zombie";
+                    allowed_zombies --;
+                }
             }
-            else {
-                e.target.classList = "square-content fence";
+            
+            
+            
+        }
+                   
+        function check_sewer(x,y){
+              var e = document.querySelector('[x="'+x+'"][y="'+y+'"]');
+            if(e){
+                return e.classList.value.indexOf('sewer') > -1;
             }
             
-            
+            return false;      
         }
         
         function check_building(x,y){
