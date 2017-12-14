@@ -97,7 +97,7 @@
 <body>
     <div id="playground"></div>
     <div id="menu">
-        <button></button>
+        <button onclick="change_turn()">Change turn</button>
         <button></button>
         <button></button>
         <button></button>
@@ -119,8 +119,9 @@
         //how many zombies per turn ? how many humans per game
         var squares = [];
         var allowed_zombies = 4;
+        var player_turn = true;
         function clicked(e){
-            if(allowed_zombies > 0){
+            if(allowed_zombies > 0 && player_turn){
                 var x = parseInt(e.target.parentElement.getAttribute('x'));
                 var y = parseInt(e.target.parentElement.getAttribute('y'));
                 if(check_building(x,y)){    
@@ -299,7 +300,16 @@
             });
         }
         
+        function change_turn(){
+            player_turn = !player_turn;
+            if(!player_turn){
+                for(var i=0; i<5; i++){
+                    setTimeout(function(){loop();},1000*i);
+                    setTimeout(function(){player_turn = true;allowed_zombies = 4;},5000)
+                }
+            }
+        }
+        
         generate_playground();
-        setInterval(function(){loop();},1000);
     </script>
 </body>
